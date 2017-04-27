@@ -22,6 +22,7 @@ RUN echo 'root:test' | chpasswd
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+RUN service ssh start
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 
