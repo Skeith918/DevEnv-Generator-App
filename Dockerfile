@@ -15,6 +15,10 @@ RUN echo "deb-src http://ftp.debian.org/debian jessie-backports main" >> /etc/ap
 RUN apt-get update
 RUN apt-get install -y openssh-server mc nano less
 
+# Install requested packages
+ADD packages.sh /opt/packages.sh
+RUN chmod a+x /opt/packages.sh
+RUN ./opt/packages.sh
 
 # Set SSH Service and connection
 RUN mkdir /var/run/sshd
@@ -24,5 +28,9 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 RUN service ssh start
 EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+
+# Add script to launch service 
+ADD init.sh /opt/init.sh
+RUN chmod a+x /opt/init.sh
+CMD ["./opt/init.sh"]
 
