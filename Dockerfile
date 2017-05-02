@@ -16,7 +16,10 @@ RUN apt-get update
 RUN apt-get install -y openssh-server mc nano less
 
 # Install requested packages
+ADD packages-list /opt/packages-list
 ADD packages.sh /opt/packages.sh
+ADD init.sh /opt/init.sh
+RUN chmod a+x /opt/init.sh
 RUN chmod a+x /opt/packages.sh
 RUN ./opt/packages.sh
 
@@ -29,8 +32,6 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN service ssh start
 EXPOSE 22
 
-# Add script to launch service 
-ADD init.sh /opt/init.sh
-RUN chmod a+x /opt/init.sh
+# Launch service 
 CMD ["./opt/init.sh"]
 
