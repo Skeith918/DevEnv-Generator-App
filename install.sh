@@ -1,7 +1,15 @@
 #!/bin/bash
 
-cat packages-list | grep "valide" | cut -d "|" -f1 >> choosen-packages.txt
-while read p; do
-  	apt install -y $p
-done <choosen-packages.txt
-rm choosen-packages.txt
+############# EXTRACTION mongo
+
+##################################################################
+
+echo $packages > packagescontainer.txt
+echo $containerName" | " > infocontainer.txt
+echo $owner >> infocontainer.txt
+imageName="$ower-$containerName"
+
+bash -lc "cd /opt/DevEnv-Generator-App/ && /usr/bin/docker build -t $imageName . "
+bash -lc "/usr/bin/docker run -d -P --name $containerName $imageName"
+
+############## mongo REQUEST TO PUSH INFORMATION INTO REAL DB TABLE
