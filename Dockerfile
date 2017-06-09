@@ -1,6 +1,9 @@
 # Set base image
 FROM debian:jessie
 
+ARG tools
+ARG users
+
 # Set packages repository
 RUN echo "deb http://ftp.fr.debian.org/debian/ jessie main" > /etc/apt/sources.list
 RUN echo "deb-src http://ftp.fr.debian.org/debian/ jessie main" >> /etc/apt/sources.list
@@ -12,21 +15,17 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
 RUN echo "deb-src http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
 
 # Install minimal packages
-RUN apt-get update
-RUN apt-get install -y openssh-server mc nano less
+RUN apt update 
+RUN apt install -y openssh-server mc nano less 
+RUN apt install -y $tools
 
 # Install requested packages
 ADD init.sh /opt/init.sh
-ADD install-packages.sh /opt/install-packages.sh
-ADD infocontainer.txt /opt/infocontainer.txt
-ADD packages.txt /opt/packages.txt
-RUN chmod a+x /opt/install-packages.sh
 RUN chmod a+x /opt/init.sh
-RUN ./opt/install-packages.sh
 
 # Set SSH Service and connection
 RUN mkdir /var/run/sshd
-RUN echo 'root:test' | chpasswd
+RUN echo '$user:test' | chpasswd
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
