@@ -14,21 +14,20 @@ os=$( echo $container | cut -d '"' -f16)
 tools=$( echo $container | cut -d '"' -f20)
 
 
-imagename=$(echo $tools | sed s/','/'+'/g)
+imagename=$(echo $tools | sed s/','/'-'/g)
 toolslist=$(echo $tools | sed s/','/' '/g)
 
 
-reqimage="db.image.find({name:\"$imagename\",os:\"$os\",tools:\"$tools\"})"
+reqimage="db.image.find({name:\"$imagename\",os:\"$os\"})"
 resimage=$(echo $req | mongo localhost:27017/devenvgen --quiet)
 
-echo $imagename
-echo $toolslist
-echo $resimage
-
-if [ -z $resimage ]
+if test -z $resimage
 then
+	bash-lc "./mongo-insert image $imagename $os $tools"
 	bash -lc "/usr/bin/docker build -t $imagename --build-arg tools=$toolslist . "
 	bash -lc "/usr/bin/docker run -i -t -d -P --name $containerName $imagename $tools"
 else
+	echo $resimage
 	bash -lc "/usr/bin/docker run -i -t -d -P --name $containerName $imagename $tools"
 fi
+

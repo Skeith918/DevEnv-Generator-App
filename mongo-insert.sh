@@ -15,5 +15,8 @@ case $1 in
 		eval="db.container.insert({owner: \"$2\", name: \"$3\", os: \"$4\", tools: \"$5\", ip: \"$6\", port: \"$7\"})"
 		echo $eval | mongo localhost:27017/devenvgen --quiet
 	;;
+	image)
+		eval="db.image.insert({name:\"$imagename\",os:\"$os\",tools:\"$tools\"})"
+		echo $eval | mongo localhost:27017/devenvgen --quiet
 esac
 
